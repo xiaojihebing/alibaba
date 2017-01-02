@@ -20,8 +20,9 @@ class SendReminderEmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($title, $content)
+    public function __construct($rfq_id, $title, $content)
     {
+        $this->rfq_id = $rfq_id;
         $this->title = $title;
         $this->content = $content;
     }
@@ -34,7 +35,11 @@ class SendReminderEmail implements ShouldQueue
     public function handle()
     {
         // 发送邮件
-        Mail::raw($this->content, function($message) {
+
+        $data = ['title'=>$this->title, 'content'=>$this->content, 'rfq_id'=>$this->rfq_id];
+
+        Mail::send('emails.remindrfq', $data, function ($message) {
+            // Mail::raw($this->content, function($message) {
             $message->from('16655376@qq.com', '更新提醒');
             $message->subject($this->title);
             $message->to('gongxi@sooga.cn');

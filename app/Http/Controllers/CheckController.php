@@ -54,10 +54,11 @@ class CheckController extends Controller
                         $rfq->save();
 
                         //推送到队列
+                        $rfq_id = $result[0];
                         $title = "[" . pq(pq($li)->find('.item-other-count span'))->attr('title') . "]" . trim(pq($li)->find('.item-title a')->text());
-                        $content = trim(pq($li)->find('.item-digest')->text()) . "<br>http://sourcing.alibaba.com/rfq_detail.htm?id=" . $result[0];
+                        $content = trim(pq($li)->find('.item-digest')->text());
 
-                        $job = new SendReminderEmail($title, $content);//->delay(30);
+                        $job = new SendReminderEmail($rfq_id, $title, $content);//->delay(30);
                         dispatch($job);
                         ++$a;
 
