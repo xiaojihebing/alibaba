@@ -11,20 +11,23 @@ use Mail;
 class SendReminderEmail implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
+    protected $data;
 
-    protected $title;
-    protected $content;
+    // protected $rfq_id;
+    // protected $title;
+    // protected $content;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($rfq_id, $title, $content)
+    public function __construct($data)
     {
-        $this->rfq_id = $rfq_id;
-        $this->title = $title;
-        $this->content = $content;
+        // $this->rfq_id = $rfq_id;
+        // $this->title = $title;
+        // $this->content = $content;
+        $this->data = $data;
     }
 
     /**
@@ -35,14 +38,11 @@ class SendReminderEmail implements ShouldQueue
     public function handle()
     {
         // 发送邮件
-
-        $data = ['title'=>$this->title, 'content'=>$this->content, 'rfq_id'=>$this->rfq_id];
-
-        Mail::send('emails.remindrfq', $data, function ($message) {
-            // Mail::raw($this->content, function($message) {
-            $message->from('16655376@qq.com', '更新提醒');
-            $message->subject($this->title);
-            $message->to('gongxi@sooga.cn');
+        // $data = ['title'=>$this->title, 'content'=>$this->content, 'rfq_id'=>$this->rfq_id];
+        Mail::send('emails.remindrfq', $this->data, function ($message) {
+            $message->from('16655376@qq.com', 'RFQ提醒');
+            $message->subject($this->data['subject']);
+            $message->to('colin@3gxun.com');
         });
         sleep(30);
     }

@@ -39,26 +39,31 @@ class CheckController extends Controller
                         // echo $result[0];
 
                         $rfq = new Article;
-                        $rfq->rfq_id = $result[0];
-                        $rfq->title = trim(pq($li)->find('.item-title a')->text());
-                        $rfq->desc = trim(pq($li)->find('.item-digest')->text());
-                        $rfq->quantity = pq(pq($li)->find('.item-other-count span'))->attr('title');
+                        $rfq->rfq_id = $rfq_id = $result[0];
+                        $rfq->title = $title = trim(pq($li)->find('.item-title a')->text());
+                        $rfq->desc = $content = trim(pq($li)->find('.item-digest')->text());
+                        $rfq->quantity = $quantity = pq(pq($li)->find('.item-other-count span'))->attr('title');
 
                         $temp = pq(pq($li)->find('.item-info'))->attr('title');
                         preg_match('/\d{4}-\d{1,2}-\d{1,2}/i',$temp,$postdate);
                         $rfq->postdate = $postdate[0];
 
-                        $rfq->country = pq(pq($li)->find('.country-flag'))->attr('title');
+                        $rfq->country = $country = pq(pq($li)->find('.country-flag'))->attr('title');
                         $rfq->reached = pq($li)->find('.item-action-left span')->text();
-                        $rfq->related = "cable";
+                        $rfq->related = $task->keyword;
                         $rfq->save();
 
                         //推送到队列
-                        $rfq_id = $result[0];
-                        $title = "[" . pq(pq($li)->find('.item-other-count span'))->attr('title') . "]" . trim(pq($li)->find('.item-title a')->text());
-                        $content = trim(pq($li)->find('.item-digest')->text());
+                        $subject = "[" . $quantity . "]" . $title;
 
-                        $job = new SendReminderEmail($rfq_id, $title, $content);//->delay(30);
+                        $data = [
+                        'rfq_id'=>$rfq_id,
+                        'subject'=>$subject,
+                        'content'=>$content,
+                        'country'=>$country
+                        ];
+
+                        $job = new SendReminderEmail($data);//->delay(30);
                         dispatch($job);
                         ++$a;
 
