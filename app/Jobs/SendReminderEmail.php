@@ -39,10 +39,10 @@ class SendReminderEmail implements ShouldQueue
     {
         // 发送邮件
         // $data = ['title'=>$this->title, 'content'=>$this->content, 'rfq_id'=>$this->rfq_id];
-        Mail::send('emails.remindrfq', $this->data, function ($message) {
+        Mail::send($this->data['tmpl'], $this->data, function ($message) {
             $message->from('16655376@qq.com', 'RFQ提醒');
             $message->subject($this->data['subject']);
-            $message->to('colin@3gxun.com');
+            $message->to($this->data['mail_to']);
         });
         sleep(30);
     }

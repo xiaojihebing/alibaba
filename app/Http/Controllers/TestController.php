@@ -14,7 +14,12 @@ class TestController extends Controller
     {
     	//测试数组
 
-    	$data = ['subject'=>'this is a new title...', 'content'=>'this is content.', 'rfq_id'=>'1343543534'];
+    	$data = [
+    	'tmpl'=>'emails.test',
+    	'subject'=>'this is a new title...', 
+    	'content'=>'this is content.', 
+    	'mail_to'=>'gongxi@sooga.cn'
+    	];
     	$job = new SendReminderEmail($data);//->delay(30);
         dispatch($job);
         return 'ok';

@@ -57,10 +57,12 @@ class CheckController extends Controller
                         $subject = "[" . $quantity . "]" . $title;
 
                         $data = [
+                        'tmpl'=>'emails.remindrfq',
                         'rfq_id'=>$rfq_id,
                         'subject'=>$subject,
                         'content'=>$content,
-                        'country'=>$country
+                        'country'=>$country,
+                        'mail_to'=>'colin@3gxun.com'
                         ];
 
                         $job = new SendReminderEmail($data);//->delay(30);
